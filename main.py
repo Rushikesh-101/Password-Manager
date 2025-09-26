@@ -13,32 +13,24 @@ class PasswordMngr :
         # func to get encryption/ decryption key from txt file
         with open("key.txt","r") as file:
             key = file.read()
+            
         f = Fernet(key)
-        print(f)
         return f
 
 
     def encryptPW(self,password):
         # func to encrypt entered password for saving in json
         key = self.fetchKey()
-        
         encrypted_password = key.encrypt(password.encode()) 
 
         print(f"Encrypted Password: {encrypted_password }")
-
-        # input = real string password
-        # output = encrypted pw
         return encrypted_password
     
     def decryptPW(self, encrypted_password):
         # func to decrypt password imported from json 
         key = self.fetchKey()
-        
         decrypted_password = key.decrypt(encrypted_password.decode())
-        #input :
-            # encrypt PW fetched from json file
-        # output :
-            # decrypted PW 
+
         print("decrypt pw:",decrypted_password)
         return decrypted_password
         
@@ -68,10 +60,7 @@ class PasswordCrud :
 
 def main():
     print("Hello from the main function!")
-    objPasswordMngr = PasswordMngr("suppu")
-    objPasswordMngr.fetchKey()
-    val = objPasswordMngr.encryptPW("suppu@18")
-    objPasswordMngr.decryptPW(val)
+    
 
 if __name__ == "__main__":
     main()
