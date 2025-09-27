@@ -42,6 +42,8 @@ class PasswordCrud :
         print()
 
 
+
+
     def addPassword(self):
            
         #import json data
@@ -162,10 +164,55 @@ class PasswordCrud :
             print(" \n WARNING - Enter correct choice ( ensure caps ) :   ")
 
 
+
+
+
+    def updatePassword(self):
+        
+        # loading json file to data
+        with open("Pw.json","r") as file:
+            data = json.load(file)
+       
+        sitename = input("\n Enter name of the site :   ")
+
+        if sitename in data :
+            username = input("\n Enter the username :   ")
+
+            # confirming old password with input
+            if username in data[sitename] and sitename in data :
+                oldPass = input("\n Enter old pasword :     ")
+                actualOldPass = data[sitename][username]
+                objPasswordMngr = PasswordMngr(username)
+                enteredold = objPasswordMngr.decryptPW(actualOldPass.encode())
+
+                # input and assign new password
+                if oldPass.encode() == enteredold:
+                    val = input("\n Enter new password :    ")
+                    newPass = objPasswordMngr.encryptPW(val)
+                    newPass = newPass.decode()
+                    data[sitename][username] = newPass
+
+                    print(" \n Password updated to :    ",val)
+
+                    # dump data to json file 
+                    with open("PW.json","w") as file:
+                        json.dump(data,file,indent=4)
+
+                # does not exist warnings
+                else :
+                    print("\n WARNING - Incorrect old password \n")
+            else:
+                print("\n WARNING - User doesnt exist in this site data \n")
+        else:
+            print("\n WARNING - Site doesnt exist in database \n")
+
+
+
+
 def main():
     print("Hello from the main function!")
     objCrud1 = PasswordCrud()
-    objCrud1.showPassword()
+    objCrud1.updatePassword()
 
 if __name__ == "__main__":
     main()
