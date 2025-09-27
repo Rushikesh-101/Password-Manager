@@ -210,10 +210,38 @@ class PasswordCrud :
 
 
 def main():
-    print("Hello from the main function!")
-    objCrud1 = PasswordCrud()
-    objCrud1.updatePassword()
+    
+    # Initiating Crud class
+    objPasswordCrud = PasswordCrud()
+    
+    # Display menu
+    print("\n 1. ADD new user and password \n 2. DISPLAY all site users / single user password \n 3. UPDATE existing user password \n 4. DELETE existing user password \n")
+    
+    # Input selected choice
+    choice = input("\n Enter number respective to the task you want to perform :    ")
 
+    # Call function using switch case
+    command = choice
+
+    match command:
+
+        case "1":
+            print("\n Your choice : ADD ")
+            objPasswordCrud.addPassword()
+        case "2":
+            print("\n Your choice : DISPLAY ")
+            objPasswordCrud.showPassword()
+        case "3":
+            print("\n Your choice : UPDATE ")
+            objPasswordCrud.updatePassword()
+        case "4":
+            print("\n Your choice : DELETE ")
+            objPasswordCrud.deletePassword()
+        case _:
+            print("\n WARNING - Incorrect input \n\n")
+
+
+            
 if __name__ == "__main__":
     main()
 
