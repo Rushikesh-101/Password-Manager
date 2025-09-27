@@ -8,7 +8,6 @@ class PasswordMngr :
         self.username = username
 
 
-
     def fetchKey(self):
         # func to get encryption/ decryption key from txt file
         with open("key.txt","r") as file:
@@ -23,15 +22,14 @@ class PasswordMngr :
         key = self.fetchKey()
         encrypted_password = key.encrypt(password.encode()) 
 
-        print(f"Encrypted Password: {encrypted_password }")
         return encrypted_password
     
+
     def decryptPW(self, encrypted_password):
         # func to decrypt password imported from json 
         key = self.fetchKey()
         decrypted_password = key.decrypt(encrypted_password.decode())
 
-        print("decrypt pw:",decrypted_password)
         return decrypted_password
         
 
@@ -41,26 +39,133 @@ class PasswordCrud :
 
     def __init__(self): 
         
-        print("init func for class PasswordCrud")
+        print()
 
 
     def addPassword(self):
-        # func to add a new user and respective password
-        print() 
-    
+           
+        #import json data
+        with open("PW.json","r") as file:
+            data = json.load(file)
+
+        #take input for site to be added
+        siteName = input("\n Enter site name :   ")
+
+        #check if site already exists
+        if siteName in data:
+            print("\n WARNING - This site already exists   ")
+        #else add the new site as outer key
+        else:
+            data[siteName] = {}
+        
+        #take input for username and password
+        username = input("\n Enter username :   ")
+
+        # here enrcrypt fn will be called
+        password = input("\n Enter password :   ")
+
+        #calling mngr class 
+        objPasswordMngr = PasswordMngr(username)
+
+        # calling encrypt fn 
+        encrypted_value = objPasswordMngr.encryptPW(password)
+        
+        
+        #updating password value with encrypted value
+        data[siteName][username] = encrypted_value.decode()
+
+        #write the new data to json
+        with open("PW.json","w") as file:
+            json.dump(data,file,indent=4)
+
+        print("\n New username added !  ")
+
+
+
+
 
     def deletePassword(self):
-        # func to delete existing password 
-        print()
+
+        # load data from json 
+        with open("PW.json","r") as file:
+            data = json.load(file)
+        
+        # site name input
+        sitename = input("\n Enter the sitename:    ")
+       
+        # choice for site deletion or user deletion
+        option = input("\n A : to delete entire website\n B : to delete username only  \n\n")
+
+
+        # site deletion
+        if option == "A":
+            if sitename in data :
+                del data[sitename]
+            else:
+                print("\n WARNING - Site doest exist ")
+
+        # user deletion
+        else:
+            username = input("\n Enter the username of which password will be DELETED :  ")
+
+            if sitename in data and username in data[sitename]:
+                del data[sitename][username]
+            else:
+                print("\n WARNING - Sitename or username doesnt exist   ")
+
+
+        # dump data into json 
+        with open("PW.json","w") as file:
+             json.dump(data,file,indent=4)
+
+
+
+
 
     def showPassword(self):
-        # func to show all users of site o password of specific user
-        print()
+
+        # taking site input
+        sitename = input("\n Enter the site name :  ")
+
+        # load json file to data
+        with open("PW.json","r") as file:
+            data = json.load(file)
+
+        # take choice input
+        choice = input(" \n Enter A to view all users of the site :\n Enter B to view password for a single user :  \n\n")
+        
+
+        # choice A : all users of a website
+        if choice == "A":
+            if sitename in data :
+                print(data[sitename].keys())
+            else:
+                print("\n Site doesnt exist ")
+
+
+        # choice B : single user password
+        elif choice == "B" :
+            username = input("\n Enter username of which password is to be displayed :  ")
+            objPasswordMngr = PasswordMngr(username)
+            password = data[sitename][username]
+            password = password.encode()
+            decodePass = objPasswordMngr.decryptPW(password)
+            
+            if sitename in data and username in data[sitename] :
+                print("\n This is your password :",decodePass.decode())
+            else:
+                print("\n WARNING - showPassword : Site or User doesnt exist    ")
+
+
+        # Incorrect choice warning
+        else : 
+            print(" \n WARNING - Enter correct choice ( ensure caps ) :   ")
 
 
 def main():
     print("Hello from the main function!")
-    
+    objCrud1 = PasswordCrud()
+    objCrud1.showPassword()
 
 if __name__ == "__main__":
     main()
