@@ -1,1 +1,6 @@
+Dependencies :
+  1. pip install cryptography
+
+To run: python main.py
+
 
